@@ -46,7 +46,7 @@ class newDB:
     def generate_query(self, query, message=DEFAULT_QUERY_MSG):
         try:
             if self.conn.is_connected():
-                cursor = self.conn.cursor()
+                cursor = self.conn.cursor(dictionary=True)
                 cursor.execute(query)
                 if bool(re.match(r"insert into|update|delete", query, re.IGNORECASE)):
                     self.conn.commit()

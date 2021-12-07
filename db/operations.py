@@ -50,7 +50,7 @@ class Operations(newDB):
                         query = f"SELECT {columns} FROM {self.get_db_name()}.{table}"
                     else:
                         query = f"SELECT {columns} FROM {self.get_db_name()}.{table} WHERE {where}"
-            return list(self.generate_query(query, DEFAULT_SELECT_MSG).fetchall())
+            return self.generate_query(query, DEFAULT_SELECT_MSG).fetchall()
         except Exception as e:
             raise (e)
 
