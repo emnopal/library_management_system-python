@@ -20,17 +20,17 @@ class BookOperations(Operations):
 
     def searchBook(self, searchQuery=None, columnsToSearch=None, dataToSearch=None, columns=None):
         if not searchQuery:
-            searchQuery = f"{columnsToSearch}={dataToSearch}"
+            searchQuery = f"{columnsToSearch}='{dataToSearch}'"
         return self.select(table=self.table, columns=columns, where=searchQuery)
 
     def updateBook(self, columnsToUpdate=None, dataToUpdate=None, columnsToSearch=None, dataToSearch=None, updateQuery=None, whereQuery=None):
         if not updateQuery:
-            updateQuery = f"{columnsToUpdate}={dataToUpdate}"
+            updateQuery = f"{columnsToUpdate}='{dataToUpdate}'"
         if not whereQuery:
-            whereQuery = f"{columnsToSearch}={dataToSearch}"
+            whereQuery = f"{columnsToSearch}='{dataToSearch}'"
         self.update(table=self.table, data=updateQuery, where=whereQuery)
 
     def deleteBook(self, columnsToDelete=None, dataToDelete=None, deleteQuery=None):
         if not deleteQuery:
-            deleteQuery = f"{columnsToDelete}={dataToDelete}"
+            deleteQuery = f"{columnsToDelete}='{dataToDelete}'"
         self.delete(table=self.table, where=deleteQuery)
