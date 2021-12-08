@@ -5,8 +5,6 @@ from db.operations import Operations
 
 class CoreOperations(Operations):
 
-    SAFE_CREDENTIALS_TO_SHOW = "userID, username, fullName, phone, email"
-
     def __init__(self, conn, db, *args, **kwargs):
         super().__init__(conn=conn, db=db, *args, **kwargs)
         self.conn = conn
@@ -25,61 +23,38 @@ class CoreOperations(Operations):
 
         self.insert(table="book", data=data, cols=cols, *args, **kwargs)
 
-    def addAdmin(
-        self, userID, username, password,
-        fullName="", phone="", email="", *args, **kwargs
+    def addUser(
+        self, userID, username, membership="Member",
+        name="", *args, **kwargs
     ):
-        data = f"{userID}, '{username}', '{hash(password)}', '{fullName}', '{phone}', '{email}'"
-        cols = "userID, username, password, fullName, phone, email"
-        self.insert(table="admin", data=data, cols=cols, *args, **kwargs)
+        data = f"{userID}, '{username}', '{name}', '{membership}'"
+        cols = "userID, username, name, membership"
+        self.insert(table="user", data=data, cols=cols, *args, **kwargs)
 
     def addRecord(
-        self, recordID, bookID, cardID,
-        borrowDate, returnDate, userID, *args, **kwargs
+        self, recordID, bookID, borrowDate,
+        userID, returnDate=None, *args, **kwargs
     ):
-
-        data = f"'{recordID}', '{bookID}', '{cardID}', '{borrowDate}', '{returnDate}', '{userID}'"
-        cols = "recordID, bookID, cardID, borrowDate, returnDate, userID"
+        if not returnDate:
+            data = f"'{recordID}', '{bookID}', '{borrowDate}', '', '{userID}'"
+        else:
+            data = f"'{recordID}', '{bookID}', '{borrowDate}', '{returnDate}', '{userID}'"
+        cols = "recordID, bookID, borrowDate, returnDate, userID"
         self.insert(table="record", data=data, cols=cols, *args, **kwargs)
 
-    def addCard(
-        self, cardID, cardNum, cardName,
-        cardUnit, cardType, *args, **kwargs
-    ):
-
-        data = f"{cardID}, '{cardNum}', '{cardName}', '{cardUnit}', '{cardType}'"
-        cols = "cardID, cardNum, cardName, cardUnit, cardType"
-        self.insert(table="card", data=data, cols=cols, *args, **kwargs)
-
     def showCore(self, table, columns=None, *args, **kwargs):
-        if table == "admin":
-            return self.select(table="admin", columns=self.SAFE_CREDENTIALS_TO_SHOW)
         return self.select(table=table, columns=columns, *args, **kwargs)
 
     def searchCore(
         self, table, searchQuery=None, columnsToSearch=None,
         dataToSearch=None, columns=None, *args, **kwargs
     ):
-        if table == "admin":
-            if not searchQuery:
-                if "password" in columnsToSearch:
-                    raise ValueError("You can't search for password")
-                searchQuery = f"{columnsToSearch}={dataToSearch}"
-            else:
-                if "password" in searchQuery:
-                    raise ValueError("You can't search for password")
-            return self.select(
-                table="admin", columns=self.SAFE_CREDENTIALS_TO_SHOW,
-                where=searchQuery, *args, **kwargs
-            )
-
-        else:
-            if not searchQuery:
-                searchQuery = f"{columnsToSearch}='{dataToSearch}'"
-            return self.select(
-                table=table, columns=columns,
-                where=searchQuery, *args, **kwargs
-            )
+        if not searchQuery:
+            searchQuery = f"{columnsToSearch}='{dataToSearch}'"
+        return self.select(
+            table=table, columns=columns,
+            where=searchQuery, *args, **kwargs
+        )
 
     def updateCore(
         self, table, columnsToUpdate=None, dataToUpdate=None, columnsToSearch=None,

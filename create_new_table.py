@@ -9,7 +9,7 @@ table_name = {
 
     #   name :          query
 
-    'book':   """   bookID INT PRIMARY KEY AUTO_INCREMENT,
+    'Book':   """   bookID INT PRIMARY KEY AUTO_INCREMENT,
                     bookNum VARCHAR(30) NOT NULL UNIQUE,
                     bookType VARCHAR(255),
                     bookTitle VARCHAR(255) NOT NULL,
@@ -20,29 +20,19 @@ table_name = {
                     bookAmount INT NOT NULL,
                     bookStock INT NOT NULL """,
 
-    'card':   """   cardID INT PRIMARY KEY AUTO_INCREMENT,
-                    cardNum VARCHAR(30) NOT NULL UNIQUE,
-                    cardName VARCHAR(255) NOT NULL,
-                    cardUnit VARCHAR(255),
-                    cardType char(1) NOT NULL""",
-
-    'admin':  """   userID INT PRIMARY KEY AUTO_INCREMENT,
+    'User':  """    userID INT PRIMARY KEY AUTO_INCREMENT,
                     username VARCHAR(255) NOT NULL UNIQUE,
-                    password VARCHAR(255) NOT NULL,
-                    fullName VARCHAR(255),
-                    phone VARCHAR(255),
-                    email VARCHAR(255)""",
+                    membership VARCHAR(255) NOT NULL,
+                    name VARCHAR(255)""",
 
     # Parent table
-    'record': """   recordID INT PRIMARY KEY AUTO_INCREMENT,
+    'Record': """   recordID INT PRIMARY KEY AUTO_INCREMENT,
                     bookID INT NOT NULL,
-                    cardID INT NOT NULL,
                     borrowDate DATETIME NOT NULL,
-                    returnDate DATETIME,
+                    returnDate DATETIME DEFAULT NULL,
                     userID INT NOT NULL,
                     FOREIGN KEY (bookID) REFERENCES Book(bookID),
-                    FOREIGN KEY (cardID) REFERENCES Card(cardID),
-                    FOREIGN KEY (userID) REFERENCES Admin(userID)"""
+                    FOREIGN KEY (userID) REFERENCES User(userID)"""
 
 }
 

@@ -65,14 +65,17 @@ class Operations(newDB):
             if not query:
                 if not columns:
                     if not where:
-                        query = f"SELECT * FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on}"
+                        query = f"SELECT * FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON {on}"
                     else:
-                        query = f"SELECT * FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on} WHERE {where}"
+                        query = f"SELECT * FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON {on} WHERE {where}"
                 else:
                     if not where:
-                        query = f"SELECT {columns} FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on}"
+                        query = f"SELECT {columns} FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON {on}"
                     else:
-                        query = f"SELECT {columns} FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on} WHERE {where}"
-            return self.generate_query(query, DEFAULT_SELECT_MSG).fetchall()
+                        query = f"SELECT {columns} FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON {on} WHERE {where}"
+            try:
+                return self.generate_query(query, DEFAULT_SELECT_MSG).fetchall()
+            except AttributeError:
+                return "None"
         except Exception as e:
             raise (e)

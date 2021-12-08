@@ -1,5 +1,5 @@
 import time; import sys; sys.path.append('..')
-from CoreOperations import CoreOperations
+from src.CoreOperations import CoreOperations
 
 class ChildOperations(CoreOperations):
 
@@ -22,7 +22,7 @@ class ChildOperations(CoreOperations):
             whereQuery=f"bookID = {bookID}", *args, **kwargs)
 
     def borrowBook(
-        self, cardID, bookNum,
+        self, bookNum,
         userID, recordID,
         *args, **kwargs
     ):
@@ -43,18 +43,18 @@ class ChildOperations(CoreOperations):
         )
 
         self.addRecord(
-            recordID=recordID, bookID=result["bookID"], cardID=cardID,
-            userID=userID, returnDate=None, borrowDate=time.strftime('%Y-%m-%d %H:%M:%S'),
+            recordID=recordID, bookID=result["bookID"], userID=userID,
+            returnDate=None, borrowDate=time.strftime('%Y-%m-%d %H:%M:%S'),
             *args, **kwargs
         )
 
-    def returnBook(self, cardID, bookNum, *args, **kwargs):
+    def returnBook(self, userID, bookNum, *args, **kwargs):
         bookID = self.searchCore(
             table="book", columnsToSearch="bookNum",
             dataToSearch=bookNum, columns="bookID", *args, **kwargs)[0]['bookID']
 
         recordID = self.searchCore(
-            table="record", searchQuery=f'bookID = {bookID} AND cardID = {cardID} AND returnDate IS NULL',
+            table="record", searchQuery=f'bookID = {bookID} AND userID = {userID} AND returnDate IS NULL',
             columns='recordID', *args, **kwargs)[0]['recordID']
 
         self.updateCore(
@@ -77,15 +77,15 @@ class ChildOperations(CoreOperations):
             dataToSearch=username, *args, **kwargs
         )
 
-    def queryBookByUser(self, cardNum, *args, **kwargs):
+    def queryBookByUser(self, userID, *args, **kwargs):
 
-        cardID = self.searchCore(
-            table="card", columnsToSearch="cardNum", dataToSearch=cardNum,
-            columns="cardID", *args, **kwargs)[0]['cardID']
+        """cardID = self.searchCore(
+            table="user", columnsToSearch="cardNum", dataToSearch=userID,
+            columns="userID", *args, **kwargs)[0]['cardID']"""
 
         return self.joinCore(
             table="book", tableToJoin="record", on="book.bookID = record.bookID",
-            whereQuery=f"cardID={cardID} AND return_date IS NULL", *args, **kwargs
+            searchQuery=f"userID={userID} AND returnDate='0000-00-00 00:00:00'", *args, **kwargs
         )
 
     def queryBookList(self, searchQuery=None, colsToQuery=None, value=None, *args, **kwargs):
