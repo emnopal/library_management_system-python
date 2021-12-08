@@ -1,9 +1,10 @@
 from db.newDB import newDB
 
+
 class Operations(newDB):
 
-    def __init__(self, conn, db):
-        super().__init__(conn=conn, database=db)
+    def __init__(self, conn, db, *args, **kwargs):
+        super().__init__(conn=conn, database=db, *args, **kwargs)
 
     def insert(self, table, cols=None, data=None, query=None, message=None):
         if not message:
@@ -54,3 +55,24 @@ class Operations(newDB):
         except Exception as e:
             raise (e)
 
+    def selectJoin(
+        self, table, tableToJoin, on, joinQuery="JOIN",
+        where=None, query=None, message=None, columns=None
+    ):
+        if not message:
+            DEFAULT_SELECT_MSG = "Record selected successfully"
+        try:
+            if not query:
+                if not columns:
+                    if not where:
+                        query = f"SELECT * FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on}"
+                    else:
+                        query = f"SELECT * FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on} WHERE {where}"
+                else:
+                    if not where:
+                        query = f"SELECT {columns} FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on}"
+                    else:
+                        query = f"SELECT {columns} FROM {self.get_db_name()}.{table} {joinQuery} {self.get_db_name()}.{tableToJoin} ON{on} WHERE {where}"
+            return self.generate_query(query, DEFAULT_SELECT_MSG).fetchall()
+        except Exception as e:
+            raise (e)

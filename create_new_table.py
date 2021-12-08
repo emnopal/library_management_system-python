@@ -7,7 +7,7 @@ conn, db = connections()
 # Create new table
 table_name = {
 
-#   name :          query
+    #   name :          query
 
     'book':   """   bookID INT PRIMARY KEY AUTO_INCREMENT,
                     bookNum VARCHAR(30) NOT NULL UNIQUE,
