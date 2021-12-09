@@ -1,8 +1,9 @@
 from db.connections import connections
-from src.BookOperations import BookOperations
+from src.CoreOperations import CoreOperations
+from src.ChildOperations import ChildOperations
 
 # set connection
 conn, db = connections()
 
-book_operations = BookOperations(conn=conn, db=db)
-book_operations.deleteBook(columnsToDelete="bookTitle", dataToDelete="Vorbes")
+del_operations = CoreOperations(conn=conn, db=db)
+del_operations.deleteCore(table='book', columnsToDelete="bookTitle", dataToDelete="Vorbes")

@@ -1,8 +1,16 @@
 from db.connections import connections
-from src.BookOperations import BookOperations
+from src.CoreOperations import CoreOperations
+from src.ChildOperations import ChildOperations
 
 # set connection
 conn, db = connections()
 
-book_operations = BookOperations(conn=conn, db=db)
-book_operations.updateBook(columnsToUpdate="bookAuthor", dataToUpdate="David J. Griffiths", columnsToSearch="bookTitle", dataToSearch="Introduction to Electrodynamics")
+operations = CoreOperations(conn=conn, db=db)
+
+operations.updateCore(
+    table="book",
+    columnsToUpdate="bookAuthor",
+    dataToUpdate="David J. Griffiths",
+    columnsToSearch="bookTitle",
+    dataToSearch="Introduction to Electrodynamics"
+)

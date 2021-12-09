@@ -117,6 +117,17 @@ class newDB:
                 f"Table: {table_name} Created",
                 *args, **kwargs
             )
+        if isinstance(columns_query, dict):
+            """
+            For dict instance, key and value must be strings
+            it's very usable for creating lot of table with lot of columns
+            """
+            for key, value in columns_query.items():
+                self.generate_query(
+                    f"CREATE TABLE IF NOT EXISTS {key} {value}",
+                    f"Table: {key} Created",
+                    *args, **kwargs
+                )
 
     def get_connections(self):
         return self.conn
