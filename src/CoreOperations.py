@@ -89,7 +89,10 @@ class CoreOperations(Operations):
             deleteQuery = f"{columnsToDelete}='{dataToDelete}'"
 
         self.delete(table=table, where=deleteQuery, *args, **kwargs)
-        getID = self.select(table=table, columns=f"{table}ID", where=deleteQuery, *args, **kwargs)[f"{table}ID"]
+        try:
+            getID = self.select(table=table, columns=f"{table}ID", where=deleteQuery, *args, **kwargs)[f"{table}ID"]
+        except:
+            return "No data!"
 
         deleteRecord = f"{table}ID = '{getID}'"
         self.delete(table="record", where=deleteRecord, *args, **kwargs)

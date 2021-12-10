@@ -27,6 +27,9 @@ class ChildOperations(CoreOperations):
         self.updateCore(
             table="book", updateQuery=f"bookStock = bookStock + {stockToAdd}",
             whereQuery=f"bookID = {bookID}", *args, **kwargs)
+        self.updateCore(
+            table="book", updateQuery=f"bookAmount = bookAmount + {stockToAdd}",
+            whereQuery=f"bookID = {bookID}", *args, **kwargs)
         return
 
     def borrowBook(
@@ -38,6 +41,10 @@ class ChildOperations(CoreOperations):
             bookID, bookStock = list(self.getBookID(
                 bookTitle=bookTitle,bookNum=bookNum,
                 columns="bookID, bookStock", *args, **kwargs).values())
+        else:
+            bookStock = self.searchCore(
+                table="book", columns="bookStock",
+                columnsToSearch="bookID", dataToSearch=bookID, *args, **kwargs)[0]['bookStock']
         if bookStock == 0:
             stockResult = self.searchCore(
                 table="record", searchQuery=f'bookID = {bookID} ORDER BY returnDate DESC',
@@ -56,34 +63,51 @@ class ChildOperations(CoreOperations):
         )
         return
 
-    def returnBook(self, userID, bookNum, *args, **kwargs):
-        # TODO: test this function
-        bookID = self.getBookID(bookNum=bookNum, *args, **kwargs)
+    def returnBook(
+        self, userID,
+        bookNum=None, bookTitle=None, bookID=None,
+        *args, **kwargs):
+        if not bookID:
+            bookID = self.getBookID(
+                bookTitle=bookTitle, bookNum=bookNum,
+                columns="bookID", *args, **kwargs)["bookID"]
         recordID = self.searchCore(
-            table="record", searchQuery=f'bookID = {bookID} AND userID = {userID} AND returnDate IS NULL',
+            table="record", searchQuery=f"bookID = {bookID} AND userID = {userID} AND returnDate='0000-00-00 00:00:00'",
             columns='recordID', *args, **kwargs)[0]['recordID']
         self.updateCore(
             table="record", updateQuery=f'returnDate = "{time.strftime("%Y-%m-%d %H:%M:%S")}"',
             whereQuery=f'recordID = {recordID}', *args, **kwargs
         )
         stockUpdate = self.searchCore(
-            columnsToSearch="bookID", dataToSearch=bookID,
+            columnsToSearch="bookID", dataToSearch=bookID, table="book",
             columns="bookStock", *args, **kwargs)[0]['bookStock']
         self.updateCore(
             table="book", updateQuery=f'bookStock = {stockUpdate} + 1',
-            whereQuery=f'bookNum = {bookNum}', *args, **kwargs
+            whereQuery=f'bookID = {bookID}', *args, **kwargs
         )
         return
 
-    def checkAdmin(self, username, *args, **kwargs):
-        # TODO: test this function
-        return self.searchCore(
-            table="admin", columnsToSearch="username",
-            dataToSearch=username, *args, **kwargs
-        )
+    def checkUser(self, username=None, name=None, *args, **kwargs):
+        if name:
+            return self.searchLikeCore(
+                table="user", columnsToSearch="name",
+                dataToSearch=name, *args, **kwargs
+            )
+        if username:
+            return self.searchLikeCore(
+                table="user", columnsToSearch="username",
+                dataToSearch=username, *args, **kwargs
+            )
+        if username != None and name != None:
+            return self.searchLikeCore(table="user", columnsToSearch="username",
+                dataToSearch=username, *args, **kwargs
+            )
+        else:
+            raise ValueError("No username or name provided")
 
-    def queryBookByUser(self, userID, *args, **kwargs):
-        # TODO: test this function
+    def queryBookByUser(self, userID=None, username=None, name=None, *args, **kwargs):
+        if not userID:
+            userID = self.checkUser(username=username, name=name)[0]['userID']
         return self.joinCore(
             table="book", tableToJoin="record", on="book.bookID = record.bookID",
             searchQuery=f"userID={userID} AND returnDate='0000-00-00 00:00:00'", *args, **kwargs
@@ -114,21 +138,16 @@ class ChildOperations(CoreOperations):
             listBook[available_book[queries]['bookTitle']] = available_book[queries]['bookStock']
         return listBook
 
-    def changeMembership(self, membership, username=None, userID=None, *args, **kwargs):
-        # TODO: test this function
-        if userID:
-            self.updateCore(
-                table="user", updateQuery=f"membership = {membership}",
-                whereQuery=f"userID = {userID}", *args, **kwargs
-            )
-        if username:
-            self.updateCore(
-                table="user", updateQuery=f"membership = {membership}",
-                whereQuery=f"username = {username}", *args, **kwargs
-            )
+    def changeMembership(self, membership, username=None, name=None, userID=None, *args, **kwargs):
+        if not userID:
+            userID = self.checkUser(username=username, name=name)[0]['userID']
+        self.updateCore(
+            table="user", updateQuery=f"membership = '{membership}'",
+            whereQuery=f"userID = {userID}", *args, **kwargs
+        )
 
     def queryBookList(self, searchQuery=None, colsToQuery=None, value=None, *args, **kwargs):
-        # TODO: test this function
+        # TODO: test this method, or review maybe this method duplicated with other method!!!
         if not searchQuery:
             searchQuery = f"{colsToQuery} LIKE '%{value}%'"
             if colsToQuery == "bookYear":

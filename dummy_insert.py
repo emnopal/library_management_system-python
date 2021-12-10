@@ -38,7 +38,8 @@ records = {
     10: {"recordID":10, "bookID": 7,  "userID": 1, "borrowDate": "2021-11-08 10:20:10", "returnDate":"2021-11-28 10:41:11"},
 }
 
-"""operations = CoreOperations(conn=conn, db=db)
+operations = CoreOperations(conn=conn, db=db)
+new_ops = ChildOperations(conn=conn, db=db)
 
 for _, value in bookInsert.items():
     operations.addBook(**value)
@@ -47,11 +48,20 @@ for _, value in user.items():
     operations.addUser(**value)
 
 for _, value in records.items():
-    operations.addRecord(**value)"""
+    operations.addRecord(**value)
 
 # add book stock
-new_ops = ChildOperations(conn=conn, db=db)
 new_ops.addBookStock(bookID=1, stockToAdd=2)
-new_ops.addBookStock(bookTitle="National Geography", stockToAdd=10)
+new_ops.addBookStock(bookTitle="Vorbes", stockToAdd=10)
 new_ops.addBookStock(bookNum="book1", stockToAdd=10)
-new_ops.borrowBook(bookTitle="National Geography", userID=1, recordID=12)
+
+# borrow book
+new_ops.borrowBook(bookTitle="Vorbes", userID=3, recordID=11)
+new_ops.borrowBook(bookID=4, userID=2, recordID=12)
+new_ops.borrowBook(bookNum="book3", userID=3, recordID=13)
+
+
+# return book
+new_ops.returnBook(bookID=3, userID=1)
+new_ops.returnBook(bookTitle="National Geography", userID=3)
+new_ops.returnBook(bookNum="book3", userID=3)
