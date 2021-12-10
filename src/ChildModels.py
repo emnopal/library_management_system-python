@@ -1,8 +1,8 @@
 from collections import defaultdict
 import time; import sys; sys.path.append('..')
-from src.CoreOperations import CoreOperations
+from src.CoreModels import CoreModels
 
-class ChildOperations(CoreOperations):
+class ChildModels(CoreModels):
 
     def __init__(self, conn, db, *args, **kwargs):
         super().__init__(conn=conn, db=db, *args, **kwargs)

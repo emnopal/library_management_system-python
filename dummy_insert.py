@@ -1,6 +1,6 @@
-from src.ChildOperations import ChildOperations
 from db.connections import connections
-from src.CoreOperations import CoreOperations
+from src.ChildModels import ChildModels
+from src.CoreModels import CoreModels
 
 # set connection
 conn, db = connections()
@@ -38,8 +38,8 @@ records = {
     10: {"recordID":10, "bookID": 7,  "userID": 1, "borrowDate": "2021-11-08 10:20:10", "returnDate":"2021-11-28 10:41:11"},
 }
 
-operations = CoreOperations(conn=conn, db=db)
-new_ops = ChildOperations(conn=conn, db=db)
+operations = CoreModels(conn=conn, db=db)
+new_ops = ChildModels(conn=conn, db=db)
 
 for _, value in bookInsert.items():
     operations.addBook(**value)
