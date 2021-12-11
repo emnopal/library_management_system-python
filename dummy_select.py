@@ -12,9 +12,11 @@ print(operations.searchCore(table="book", columnsToSearch="bookNum", dataToSearc
 print(operations.searchCore(table="book", columnsToSearch="bookTitle", dataToSearch="Introduction to Electrodynamics"))
 print(new_ops.queryBookByUser(userID=1))
 print(new_ops.listOfAvailableBooks())
-print(list(new_ops.getBookID(bookTitle="National Geography", columns="bookID, bookStock").values())[0])
+print(list(new_ops.getBookID(bookTitle="National Geography", columns="bookID, bookStock")[0].values())[0])
 print(new_ops.getBookID(bookNum="book1"))
+print(new_ops.getBookID(bookTitle="quantum"))
 print(operations.showCore(table="record"))
 print(new_ops.checkUser(name="Husein"))
 print(new_ops.checkUser(username="cd01"))
 print(new_ops.queryBookByUser(name="Husein"))
+

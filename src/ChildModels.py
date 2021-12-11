@@ -11,7 +11,7 @@ class ChildModels(CoreModels):
         if bookTitle:
             bookID = self.searchLikeCore(
                 table="book", columnsToSearch="bookTitle",
-                dataToSearch=bookTitle, columns=columns, *args, **kwargs)[0]
+                dataToSearch=bookTitle, columns=columns, *args, **kwargs)#[0]
         else:
             bookID = self.searchLikeCore(
                 table="book", columnsToSearch="bookNum",

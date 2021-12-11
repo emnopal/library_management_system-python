@@ -64,6 +64,8 @@ async def get_all_book_available():
 async def get_book_by_id(bookNum: str):
     return childOps.getBookID(bookNum=bookNum)
 
+# BEGIN TODO: check function here!
+
 @app.get("/api/get/book/title/{bookTitle}/")
 async def get_book_by_id(bookTitle: str):
     return childOps.getBookID(bookTitle=bookTitle)
@@ -97,6 +99,8 @@ async def get_user_by_name(name: str):
 @app.get("/api/get/book/user/username/{username}/")
 async def get_user_by_name(username: str):
     return childOps.queryBookByUser(username=username)
+
+# END TODO!
 
 
 # [U]pdate

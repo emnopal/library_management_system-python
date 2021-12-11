@@ -57,7 +57,7 @@ class CoreModels(Operations):
         dataToSearch=None, columns=None, *args, **kwargs
     ):
         if not searchQuery:
-            searchQuery = f"{columnsToSearch} LIKE '{dataToSearch}'"
+            searchQuery = f"{columnsToSearch} LIKE '%{dataToSearch}%'"
         return self.select(
             table=table, columns=columns,
             where=searchQuery, *args, **kwargs
